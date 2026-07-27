@@ -29,3 +29,12 @@ resource "aws_instance" "ingress_server" {
     Name = "Ingress-Server"
   }
 }
+
+resource "aws_eip" "ingress_eip" {
+  instance = aws_instance.ingress_server.id
+  domain   = "vpc"
+
+  tags = {
+    Name = "ingress-eip"
+  }
+}

@@ -1,0 +1,20 @@
+# Terraform cache
+.terraform/
+**/.terraform/*
+
+# Terragrunt cache
+.terragrunt-cache/
+**/.terragrunt-cache/*
+terragrunt-debug.log
+
+# Terraform state files (CRITICAL to ignore)
+*.tfstate
+*.tfstate.*
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
