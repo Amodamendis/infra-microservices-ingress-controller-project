@@ -4,10 +4,10 @@ provider "aws" {
 }
 
 module "vpc" {
-  source            = "../../modules/vpc"
-  vpc_cidr          = "10.0.0.0/16"
-  subnet_cidr       = "10.0.1.0/24"
-  availability_zone = "${var.aws_region}a"
+  source              = "../../modules/vpc"
+  vpc_cidr            = "10.0.0.0/16"
+  public_subnet_cidrs = ["10.0.1.0/24", "10.0.2.0/24"]
+  availability_zones  = ["${var.aws_region}a", "${var.aws_region}b"]
 }
 
 module "security_groups" {
@@ -21,9 +21,16 @@ module "iam_roles" {
 
 module "ec2_ingress" {
   source               = "../../modules/ec2-ingress"
-  subnet_id            = module.vpc.subnet_id
+  subnet_id            = module.vpc.first_subnet_id  # Updated to use the first subnet
   sg_id                = module.security_groups.sg_id
   iam_instance_profile = module.iam_roles.instance_profile_name
+}
+
+
+module "eks" {
+  source       = "../../modules/eks"
+  cluster_name = "Microservices-app-cluster"
+  subnet_ids   = module.vpc.subnet_ids
 }
 
 output "ingress_server_ip" {
