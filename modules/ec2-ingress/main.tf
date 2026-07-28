@@ -28,6 +28,10 @@ resource "aws_instance" "ingress_server" {
   tags = {
     Name = "Ingress-Server"
   }
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_eip" "ingress_eip" {
