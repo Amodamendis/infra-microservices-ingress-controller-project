@@ -17,8 +17,16 @@ resource "aws_subnet" "public" {
   cidr_block              = var.public_subnet_cidrs[count.index]
   availability_zone       = var.availability_zones[count.index]
   map_public_ip_on_launch = true
-  tags = { Name = "ingress-public-subnet-${count.index + 1}" }
+
+
+  tags = { 
+    Name = "ingress-public-subnet-${count.index + 1}"
+    "kubernetes.io/role/elb" = "1"
+    "kubernetes.io/cluster/Microservices-app-cluster" = "shared"
+  }
 }
+
+
 
 resource "aws_route_table" "public_rt" {
   vpc_id = aws_vpc.main.id
