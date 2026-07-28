@@ -3,6 +3,7 @@ resource "aws_security_group" "ingress_sg" {
   description = "Security group for Ingress Server"
   vpc_id      = var.vpc_id
 
+  
   dynamic "ingress" {
     for_each = var.ingress_ports
     content {
@@ -12,6 +13,15 @@ resource "aws_security_group" "ingress_sg" {
       cidr_blocks = ["0.0.0.0/0"]
       description = ingress.value.description
     }
+  } 
+
+  
+  ingress {
+    description = "Allow Kubernetes NodePort Range"
+    from_port   = 30000
+    to_port     = 32767
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
