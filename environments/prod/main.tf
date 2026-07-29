@@ -26,7 +26,6 @@ module "ec2_ingress" {
   iam_instance_profile = module.iam_roles.instance_profile_name
 }
 
-
 module "eks" {
   source       = "../../modules/eks"
   cluster_name = "Microservices-app-cluster"
@@ -35,4 +34,20 @@ module "eks" {
 
 output "ingress_server_ip" {
   value = module.ec2_ingress.public_ip
+}
+
+
+module "ec2_monitoring" {
+  source               = "../../modules/ec2-monitoring"
+  
+ 
+  subnet_id            = module.vpc.first_subnet_id  
+  security_group_id    = module.security_groups.sg_id
+  iam_instance_profile = module.iam_roles.instance_profile_name
+  
+  instance_type        = "t2.medium"
+}
+
+output "monitoring_server_ip" {
+  value = module.ec2_monitoring.monitoring_public_ip
 }
