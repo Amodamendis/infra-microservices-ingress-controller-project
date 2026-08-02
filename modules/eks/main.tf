@@ -12,6 +12,8 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
   role       = aws_iam_role.eks_cluster_role.name
 }
 
+
+
 # --- EKS Cluster ---
 resource "aws_eks_cluster" "main" {
   name     = var.cluster_name
@@ -33,6 +35,8 @@ resource "aws_iam_role" "eks_node_role" {
   })
 }
 
+
+
 resource "aws_iam_role_policy_attachment" "node_AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = aws_iam_role.eks_node_role.name
@@ -47,6 +51,13 @@ resource "aws_iam_role_policy_attachment" "node_AmazonEC2ContainerRegistryReadOn
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.eks_node_role.name
 }
+
+
+resource "aws_iam_role_policy_attachment" "node_ssm_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  role       = aws_iam_role.eks_node_role.name
+}
+
 
 # --- EKS Node Group (1x t2.medium) ---
 resource "aws_eks_node_group" "main" {
@@ -70,6 +81,7 @@ resource "aws_eks_node_group" "main" {
     aws_iam_role_policy_attachment.node_AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.node_AmazonEKS_CNI_Policy,
     aws_iam_role_policy_attachment.node_AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.node_ssm_policy,
   ]
 }
 
